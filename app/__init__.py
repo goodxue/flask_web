@@ -4,11 +4,19 @@
 __AUTHOR__ = 'xwp' 
 
 from flask import Flask
-app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return "Hello World!"
+def register_web_blueprint(app):
+    from app.web import web
+    app.register_blueprint(web)
+
+def create_app(config=None):
+    app = Flask(__name__)
+    app.config.from_object('app.settings')
+    app.config.from_object('app.secure')
+    register_web_blueprint(app)
+    return app
+
+
 
 if __name__ == '__main__':
     app.run() 
