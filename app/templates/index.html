@@ -1,9 +1,11 @@
-{% extends "base.html" %}
+{% extends "base.html" %}   
+
 {% block title %}Index{% endblock %}
-{% block head %}
-    {{ super() }}
-    <style>
-    </style>
+{% block content %} 
+    <h1>This is my page that created by my myself.</h1>
+{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 {% endblock %}
 {% block body %}
 <h1>Hello,World!</h1>

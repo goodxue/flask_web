@@ -1,11 +1,32 @@
 <html>
     <head>
-        {% block head %}
-        <title>{% block title %}{% endblock %} - My Application</title>
+        {% block head %}   <!-- head block -->
+        <meta charset="utf-8">
+        <title>{% block title %}Template - Weipeng Xue{% endblock %} - My Application</title> <!-- title block -->
+        {% block styles %}
+        {{ super() }}
+        <style>
+            .foo{
+                color:red;
+            }
+        </style>
+        {% endblock %}    <!-- style comment -->
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-        {% endblock %}
+        <nav>
+            <ul><li><a href="{{ url_for('web.index') }}">Home</a></li></ul>
+        </nav>
+        <main>
+            {% block content %} <!-- content block -->
+            {% endblock %}
+        </main>
+        <footer>
+            {% block footer %}  <!-- content block -->
+            ...
+            {% endblock %}
+        </footer>
+        {% block scripts %} <!-- scripts block -->
+        {% endblock %}   
     </body>
 </html>
