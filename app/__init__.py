@@ -4,6 +4,7 @@
 __AUTHOR__ = 'xwp' 
 
 from flask import Flask
+from app.models.base import db 
 
 def register_web_blueprint(app):
     from app.web import web
@@ -14,6 +15,9 @@ def create_app(config=None):
     app.config.from_object('app.settings')
     app.config.from_object('app.secure')
     register_web_blueprint(app)
+
+    db.init_app(app)
+    db.create_all(app=app)
     return app
 
 
