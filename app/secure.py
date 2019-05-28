@@ -3,4 +3,4 @@
 '''
 __AUTHOR__ = 'xwp' 
 
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mysql@localhost/first_flask'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:MySQL.@localhost/first_flask'
