@@ -9,6 +9,8 @@ verify_ssl = true
 flask = "*"
 flask-sqlalchemy = "*"
 pymysql = {extras = ["rsa"],version = "*"}
+faker = "*"
+random = "*"
 
 [requires]
 python_version = "3.7"

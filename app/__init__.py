@@ -4,7 +4,7 @@
 __AUTHOR__ = 'xwp' 
 
 from flask import Flask
-from app.models.base import db 
+from .models import db 
 
 def register_web_blueprint(app):
     from app.web import web
@@ -17,6 +17,7 @@ def create_app(config=None):
     register_web_blueprint(app)
 
     db.init_app(app)
+    db.drop_all(app=app)
     db.create_all(app=app)
     return app
 
