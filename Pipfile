@@ -12,6 +12,7 @@ pymysql = {extras = ["rsa"],version = "*"}
 faker = "*"
 random = "*"
 flask-wtf = "*"
+flask-ckeditor = "*"
 
 [requires]
 python_version = "3.7"
