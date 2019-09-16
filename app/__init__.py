@@ -7,6 +7,8 @@ from flask import Flask,render_template,request
 from app.extensions import db 
 from app.extensions import bootstrap,db,login_manager,csrf,moment
 from app.settings import config
+from app.models import Admin,Post,Category,Comment,Link
+from flask_login import current_user
 import click
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -34,12 +36,34 @@ def create_app(config_name=None):
     app.config.from_object(config[config_name])
     app.config.from_object('app.secure')
 
-    register_web_blueprint(app)
     register_extensions(app)
+    register_web_blueprint(app)
     register_commands(app)
+    register_template_context(app)
 
     #db.create_all()
     return app
+
+'''
+为了避免在每个视图函数中渲染模板时传入这些数据，我们在模板上下文处理函数中向模板上下文添加了管理员
+对象变量（admin）。另外，在多个页面中都包含的边栏中包含分类列表，我们也把分类数据传入到模板上下文中。
+个人理解是这样在每个视图render_template的参数中不需要再传入这些参数了
+'''
+
+def register_template_context(app):
+    @app.context_processor #app_context_processor在flask中被称作上下文处理器，借助app_context_processor我们可以让所有自定义变量在模板中可见
+    def make_template_context():
+        admin = Admin.query.first()
+        categories = Category.query.order_by(Category.name).all()
+        links = Link.query.order_by(Link.name).all()
+        if current_user.is_authenticated:
+            unread_comments = Comment.query.filter_by(reviewed=False).count()
+        else:
+            unread_comments = None
+        return dict(                                #将这四者变为一个变量在所有模板中可见
+            admin = admin, categories=categories,
+            links = links, unread_comments=unread_comments
+        )
 
 
 def register_commands(app):
