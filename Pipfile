@@ -13,6 +13,8 @@ faker = "*"
 random = "*"
 flask-wtf = "*"
 flask-ckeditor = "*"
+flask-login = "*"
+click = "*"
 
 [requires]
 python_version = "3.7"

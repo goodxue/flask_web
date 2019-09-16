@@ -1,32 +1,40 @@
 import random
+
 from faker import Faker
 from sqlalchemy.exc import IntegrityError
 
-from models.models import Admin, Category, Post, Comment
-from app.models.base import db
+from app.extensions import db
+from app.models import Admin, Category, Post, Comment, Link
+
+fake = Faker()
+
 
 def fake_admin():
     admin = Admin(
         username='admin',
-        blog_title='XueBlog',
-        blog_sub_title="Weipeng Xue's first blog site based on flask.",
-        name='Weipeng Xue',
-        about='Um, l, Weipeng Xue, had a fun time as a member of CHAM...'
+        blog_title='Bluelog',
+        blog_sub_title="No, I'm the real thing.",
+        name='Mima Kirigoe',
+        about='Um, l, Mima Kirigoe, had a fun time as a member of CHAM...'
     )
     admin.set_password('helloflask')
     db.session.add(admin)
     db.session.commit()
 
+
 def fake_categories(count=10):
     category = Category(name='Default')
     db.session.add(category)
+
     for i in range(count):
         category = Category(name=fake.word())
+        db.session.add(category)
         try:
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-        
+
+
 def fake_posts(count=50):
     for i in range(count):
         post = Post(
@@ -38,6 +46,7 @@ def fake_posts(count=50):
 
         db.session.add(post)
     db.session.commit()
+
 
 def fake_comments(count=500):
     for i in range(count):
@@ -93,4 +102,13 @@ def fake_comments(count=500):
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
+    db.session.commit()
+
+
+def fake_links():
+    twitter = Link(name='Twitter', url='#')
+    facebook = Link(name='Facebook', url='#')
+    linkedin = Link(name='LinkedIn', url='#')
+    google = Link(name='Google+', url='#')
+    db.session.add_all([twitter, facebook, linkedin, google])
     db.session.commit()
