@@ -51,9 +51,9 @@
                 </div>
             </div>
             <div class="comments" id="comments">
-                <h3>{{ pagination.total }} Comments
+                <h3>{{ pagination.total }} Reviewed Comments
                     <small>
-                        <a href="{{ url_for('.show_post', post_id=post.id, page=pagination.pages or 1) }}#C{{(comments|length)%pagination.per_page or 1}}">
+                        <a href="{{ url_for('.show_post', post_id=post.id, page=pagination.pages or 1) }}#C{{(pagination.total)%pagination.per_page or pagination.per_page-1}}">
                             latest</a>
                     </small>
                     {% if current_user.is_authenticated %}

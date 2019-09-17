@@ -18,8 +18,10 @@ def register_logging(app):
 
 
 def register_web_blueprint(app):
-    from app.web import web
+    from app.web import web, auth_bp, admin_bp
     app.register_blueprint(web)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
 
 def register_extensions(app):
     bootstrap.init_app(app)

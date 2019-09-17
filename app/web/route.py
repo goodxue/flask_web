@@ -9,6 +9,7 @@ from flask_login import current_user
 from app.forms import CommentForm, AdminCommentForm
 from . import web
 from app.models import Post,Category,Comment
+from app.helper import redirect_back
 
 @web.route('/')
 def index():
@@ -38,7 +39,7 @@ def show_post(post_id):
     if current_user.is_authenticated:
         form = AdminCommentForm()
         form.author.data = current_user.name
-        form.email.data = current_app.config['BLUELOG_EMAIL']
+        #form.email.data = current_app.config['BLOG_EMAIL']
         form.site.data = url_for('.index')
         from_admin = True
         reviewed = True
@@ -49,7 +50,7 @@ def show_post(post_id):
 
     if form.validate_on_submit():
         author = form.author.data
-        email = form.email.data
+        #email = form.email.data
         site = form.site.data
         body = form.body.data
         comment = Comment(
@@ -59,14 +60,14 @@ def show_post(post_id):
         if replied_id:
             replied_comment = Comment.query.get_or_404(replied_id)
             comment.replied = replied_comment
-            send_new_reply_email(replied_comment)
+            #send_new_reply_email(replied_comment)
         db.session.add(comment)
         db.session.commit()
         if current_user.is_authenticated:  # send message based on authentication status
             flash('Comment published.', 'success')
         else:
             flash('Thanks, your comment will be published after reviewed.', 'info')
-            send_new_comment_email(post)  # send notification email to admin
+            #send_new_comment_email(post)  # send notification email to admin
         return redirect(url_for('.show_post', post_id=post_id))
     
     return render_template('blog/post.html', post=post, pagination=pagination, form=form, comments=comments)
