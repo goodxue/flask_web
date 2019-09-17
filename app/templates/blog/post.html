@@ -53,7 +53,7 @@
             <div class="comments" id="comments">
                 <h3>{{ pagination.total }} Comments
                     <small>
-                        <a href="{{ url_for('.show_post', post_id=post.id, page=pagination.pages or 1) }}#comments">
+                        <a href="{{ url_for('.show_post', post_id=post.id, page=pagination.pages or 1) }}#C{{(comments|length)%pagination.per_page or 1}}">
                             latest</a>
                     </small>
                     {% if current_user.is_authenticated %}
@@ -77,7 +77,11 @@
                                             {% if comment.from_admin %}
                                                 {{ admin.name }}
                                             {% else %}
+                                            <!--为每个评论设置一个锚点，用于快速跳到这-->
+                                                <div id="C{{loop.index}}">
                                                 {{ comment.author }}
+                                                </div>
+
                                             {% endif %}
                                         </a>
                                         {% if comment.from_admin %}
@@ -94,7 +98,10 @@
                                         <br>{{ comment.replied.body }}
                                     </p>
                                 {%- endif -%}
-                                <p class="mb-1">{{ comment.body }}</p>
+
+                                
+                                <p class="mb-1" id="comment-{{comments.index}}">{{ comment.body }}</p>
+
                                 <div class="float-right">
                                     <a class="btn btn-light btn-sm"
                                        href="{{ url_for('.reply_comment', comment_id=comment.id) }}">Reply</a>
@@ -116,6 +123,7 @@
                     <div class="tip"><h5>No comments.</h5></div>
                 {% endif %}
             </div>
+            
             {% if comments %}
                 {{ render_pagination(pagination, fragment='#comments') }}
             {% endif %}

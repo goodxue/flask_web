@@ -88,3 +88,12 @@ def reply_comment(comment_id):
         return redirect(url_for('.show_post', post_id=comment.post.id))
     return redirect(
         url_for('.show_post', post_id=comment.post_id, reply=comment_id, author=comment.author) + '#comment-form')
+
+@web.route('/change-theme/<theme_name>')
+def change_theme(theme_name):
+    if theme_name not in current_app.config['BLUELOG_THEMES'].keys():
+        abort(404)
+
+    response = make_response(redirect_back())
+    response.set_cookie('theme', theme_name, max_age=30 * 24 * 60 * 60)
+    return response
