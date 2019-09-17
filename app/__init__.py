@@ -40,6 +40,7 @@ def create_app(config_name=None):
     register_web_blueprint(app)
     register_commands(app)
     register_template_context(app)
+    register_errors(app)
 
     #db.create_all()
     return app
@@ -135,6 +136,24 @@ def register_commands(app):
         click.echo('Generating %d comments...' % comment)
         fake_comments(comment)
         click.echo('Done.')
+
+def register_errors(app):
+    @app.errorhandler(400)
+    def bad_request(e):
+        return render_template('errors/400.html'), 400
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('errors/404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('errors/500.html'), 500
+'''
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        return render_template('errors/400.html', description=e.description), 400
+        '''
 
 if __name__ == '__main__':
     app.run() 

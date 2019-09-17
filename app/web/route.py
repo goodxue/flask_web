@@ -70,3 +70,21 @@ def show_post(post_id):
         return redirect(url_for('.show_post', post_id=post_id))
     
     return render_template('blog/post.html', post=post, pagination=pagination, form=form, comments=comments)
+
+@web.route('/category/<int:category_id>')
+def show_category(category_id):
+    category = Category.query.get_or_404(category_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['BLOG_POST_PER_PAGE']
+    pagination = Post.query.with_parent(category).order_by(Post.timestamp.desc()).paginate(page, per_page)
+    posts = pagination.items
+    return render_template('blog/category.html', category=category, pagination=pagination, posts=posts)
+
+@web.route('/reply/comment/<int:comment_id>')
+def reply_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    if not comment.post.can_comment:
+        flash('Comment is disabled.', 'warning')
+        return redirect(url_for('.show_post', post_id=comment.post.id))
+    return redirect(
+        url_for('.show_post', post_id=comment.post_id, reply=comment_id, author=comment.author) + '#comment-form')
