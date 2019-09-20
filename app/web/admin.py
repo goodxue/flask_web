@@ -2,9 +2,9 @@ from flask import render_template, flash, redirect, url_for, request, current_ap
 from app.extensions import db
 from flask_login import current_user, login_required
 from flask_ckeditor import upload_success, upload_fail
-from app.forms import CommentForm, AdminCommentForm , SettingForm, PostForm, CategoryForm
+from app.forms import CommentForm, AdminCommentForm , SettingForm, PostForm, CategoryForm, LinkForm
 from . import admin_bp
-from app.models import Post,Category,Comment
+from app.models import Post,Category,Comment,Link
 from app.helper import redirect_back
 
 @admin_bp.route('settings',methods=['GET','POST'])
@@ -124,6 +124,9 @@ def approve_comment(comment_id):
     flash('Comment published','success')
     return redirect_back()
 
+
+@admin_bp.route()
+
 @admin_bp.route('/category/manage')
 @login_required
 def manage_category():
@@ -168,5 +171,46 @@ def delete_category(category_id):
     category.delete()
     flash('Category deleted.','success')
     return redirect(url_for('.manage_category'))
+
+@admin_bp.route('/link/manage',methods=['GET','POST'])
+@login_required
+def manage_link():
+    return render_template('/admin/manage_link.html')
     
-    
+@admin_bp.route('/link/new',methods=['GET','POST'])
+@login_required
+def new_link():
+    form = LinkForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        url = form.url.data
+        link = Link(name=name,url=url)
+        db.session.add(link)
+        db.session.commit()
+        flash('Link created.','success')
+        return redirect(url_for('.manage_link'))
+    return render_template('/admin/new_link.html',form=form)
+
+@admin_bp.route('/link/<int:link_id>/edit',methods=['GET','POST'])
+@login_required
+def edit_link(link_id):
+    form = LinkForm()
+    link = Link.query.get_or_404(link_id)
+    if form.validate_on_submit():
+        link.name = form.name.data
+        link.url = form.url.data
+        db.session.commit()
+        flash('Link updated.','success')
+        return redirect(url_for('.manage_link'))
+    form.name.data = link.name
+    form.url.data = link.url
+    return render_template('/admin/edit_link.html',form=form)
+
+@admin_bp.route('/link/<int:link_id>/delete',methods=['POST'])
+@login_required
+def delete_link(link_id):
+    link = Link.query.get_or_404(link_id)
+    db.session.delete(link)
+    db.session(commit)
+    flash('Link deleted.','success')
+    return redirect(url_for('.manage_link'))

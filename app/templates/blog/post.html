@@ -75,7 +75,9 @@
                                         <a href="{% if comment.site %}{{ comment.site }}{% else %}#{% endif %}"
                                            target="_blank">
                                             {% if comment.from_admin %}
+                                                <div id="C{{loop.index}}">
                                                 {{ admin.name }}
+                                                </div>
                                             {% else %}
                                             <!--为每个评论设置一个锚点，用于快速跳到这-->
                                                 <div id="C{{loop.index}}">

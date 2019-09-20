@@ -50,7 +50,7 @@ def show_post(post_id):
 
     if form.validate_on_submit():
         author = form.author.data
-        #email = form.email.data
+        email = form.email.data
         site = form.site.data
         body = form.body.data
         comment = Comment(
